@@ -1,0 +1,5 @@
+engine/testdata/util.c=init,variance,mean,hypotenuse,xor_checksum,average,mod_invoke,mod_emit
+engine/testdata/math.c=mean,sum_of_squares,square_root,address_xor
+test/testdata/event-string.c=say
+engine/testdata/blockinfo.c=block_height,block_time
+test/testdata/liquid-token.c=init,mint,transfer,get_balance

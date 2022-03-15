@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "name": "jlKO",
+      "parameters": [
+        {
+          "name": "i",
+          "type": "int32"
+        }
+      ]
+    },
+    {
+      "name": "AmUA",
+      "parameters": [
+        {
+          "name": "j",
+          "type": "int32"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "a",
+      "parameters": [
+        {
+          "name": "k",
+          "type": "int32"
+        }
+      ]
+    }
+  ]
+}

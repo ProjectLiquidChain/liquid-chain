@@ -1,0 +1,79 @@
+version: 2.1
+
+jobs:
+  test:
+    working_directory: ~/liquid
+    docker:
+      - image: golang:1.15
+    steps:
+      - checkout
+      - restore_cache: # restores saved cache if no changes are detected since last run
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          keys:
+            - v1-pkg-cache-{{ checksum "go.sum" }}
+            - v1-pkg-cache
+      - run:
+          name: "Create a temp directory for artifacts"
+          command: mkdir -p /tmp/artifacts
+      - run:
+          name: Install deps
+          command: go mod download
+      - run:
+          name: Build
+          command: cd cmd && go build -o /liquid .
+      - run:
+          name: Test
+          command: |
+            go get -u github.com/ory/go-acc
+            $GOPATH/bin/go-acc ./... -o c.out
+            go tool cover -html=c.out -o coverage.html
+            mv coverage.html /tmp/artifacts
+      - run:
+          name: Upload coverage # Will upload coverage result to Coveralls
+          command: |
+            go get -v github.com/mattn/goveralls
+            $GOPATH/bin/goveralls -coverprofile=c.out -service=circle-ci -repotoken=$COVERALLS_REPO_TOKEN
+      - save_cache: # Store cache in the /go/pkg directory
+          key: v1-pkg-cache-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg"
+      - store_artifacts:
+          path: /tmp/artifacts
+
+  build-and-push-image:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    environment:
+      IMAGE_NAME: liquidchaindev/liquid-chain
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: |
+            MAJOR="$(echo $CIRCLE_TAG | cut -d '.' -f1)"
+            MINOR="$(echo $CIRCLE_TAG | cut -d '.' -f2)"
+            PATCH="$(echo $CIRCLE_TAG | cut -d '.' -f3)"
+            docker build -f ./dockers/liquid.Dockerfile -t $IMAGE_NAME:$MAJOR -t $IMAGE_NAME:"$MAJOR.$MINOR" -t $IMAGE_NAME:"$MAJOR.$MINOR.$PATCH" .
+      - run:
+          name: Push Docker image
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u $DOCKERHUB_USERNAME --password-stdin
+            docker push $IMAGE_NAME # This will push all tags
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+      - build-and-push-image:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+            branches:
+              ignore: /.*/

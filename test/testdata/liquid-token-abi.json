@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "name": "Mint",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "Transfer",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint64"
+        },
+        {
+          "name": "memo",
+          "type": "uint64"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "get_balance",
+      "parameters": [
+        {
+          "name": "address",
+          "type": "address"
+        }
+      ]
+    },
+    {
+      "name": "mint",
+      "parameters": [
+        {
+          "name": "amount",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "transfer",
+      "parameters": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "init",
+      "parameters": [
+        {
+          "name": "amount",
+          "type": "uint64"
+        }
+      ]
+    }
+  ]
+}

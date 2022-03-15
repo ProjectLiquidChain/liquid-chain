@@ -1,0 +1,1 @@
+{"version":1,"events":[{"name":"Say","parameters":[{"name":"message","type":"uint8[]"}]}],"functions":[{"name":"say","parameters":[{"name":"i","type":"int32"}]}]}

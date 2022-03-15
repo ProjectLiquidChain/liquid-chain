@@ -1,0 +1,12 @@
+version: "3"
+services:
+  lqc-node:
+    environment:
+      ROOT_DIR: /lqc-node-data
+    volumes:
+      - ./data:/lqc-node-data
+    ports:
+      - 26657:26657
+      - 26656:26656
+      - 5555:5555
+    build: .
